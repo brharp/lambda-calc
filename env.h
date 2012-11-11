@@ -22,6 +22,7 @@ Env *link(const wchar_t *name, const Value *value, Env *env);
 const Value *bind(const wchar_t *name, const Value *value, Env *env);
 Env *get_global_environment();
 void print_env(Env * env, FILE *stream);
+void print_locals(Env * env, FILE *stream);
 
 /* AUTHOR
 /*	Brent Harp

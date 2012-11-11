@@ -7,6 +7,7 @@
 /*--*/
 
 #include <assert.h>
+#include <stdio.h>
 
 #include "mystdlib.h"
 #include "types.h"
@@ -100,6 +101,36 @@ Binding *put_binding(Env *env, const wchar_t *name, const Value *val)
 }
 
 
+/* print_locals - prints one level of bindings */
+
+void print_locals(Env *env, FILE *stream)
+{
+	Binding *bnd = 0;
+	static bool rec = false;
+
+	assert(env != 0);
+	assert(stream != 0);
+
+	if (rec == true) {
+		fputws(L"...", stream);
+		return;
+	}
+
+	rec = true;
+
+	for (bnd = env->bindings; bnd != UNBOUND; bnd = bnd->link) {
+		fputws(bnd->name, stream);
+		fputwc(L'=', stream);
+		print_value(bnd->value, stream);
+		if (bnd->link != 0) {
+			fputwc(L',', stream);
+		}
+	}
+
+	rec = false;
+}
+
+
 /* print_env - prints an environment */
 
 void print_env(Env *env, FILE *stream)
@@ -143,6 +174,10 @@ const Value *bind(const wchar_t *name, const Value *value, Env *env)
 	assert(name  != 0);
 	assert(value != 0);
 
+	if (value->type == T_Function) {
+		value->data.function->name = name;
+	}
+
 	if ((bnd = get_binding(env, name)) == UNBOUND) {
 		/* create new binding */
 		put_binding(env, name, value);
@@ -182,6 +217,8 @@ const Value *lookup(const wchar_t * name, Env * env)
 	if ((bnd = get_binding(env, name)) != UNBOUND) {
 		val = bnd->value;
 	}
+
+	assert(val != 0);
 
 	return val;
 }

@@ -51,6 +51,22 @@ if false 'yes 'no
 ;; Numbers.
 plus = \m.\n.\f.\x.m f (n f x)
 succ = \n.\f.\x.f (n f x)
+
+;; Predecessor.
+pred = \n.\f.\x.n (\g.\h.h (g f)) (\u.x) (\u.u)
+;; How pred works.
+;; Apply "\g.\h.h (g f)" n times:
+;; (\g.\h.h (\g.\h.h (\g.\h.h (g f)) f) f) (\u.x) (\u.u)
+;; You will notice 3 applications of 'h' and only one of 'g'.
+;; The 'g' is bound to (\u.x) and the 'h' is bound to (\u.u):
+;; (\u.u (\u.u (\u.u (\u.x f)) f) f)
+;; Working from the inside out, the desired result
+;; is obtained:
+;; (\u.u (\u.u (\u.u x) f) f)
+;; (\u.u (\u.u x) f) f)
+;; (\u.u (f x) f)
+;; (f (f x))
+
 one = \f.\x.f x
 two = plus one one
 f = \y.cons 'x y
@@ -65,4 +81,8 @@ car i
 car (cdr i)
 cadr i
 cddr i
+
+j = pred two f 'nil
+car j
+cdr j
 

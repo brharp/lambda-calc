@@ -24,7 +24,9 @@ enum Exp_Type {
 	T_Exp_Lambda,
 	T_Exp_Pair,
 	T_Exp_Quote,
-	T_Exp_Assign
+	T_Exp_Assign,
+	T_Exp_Print,
+	T_Exp_Read
 };
 
 
@@ -40,15 +42,15 @@ enum Type {
 
  /* type definitions */
 
-typedef enum   Type Type;
+typedef enum   Type     Type;
 typedef enum   Exp_Type Exp_Type;
-typedef union  Object Object;
-typedef struct Env Env;		/* environments */
-typedef struct Binding Binding;
+typedef union  Object   Object;
+typedef struct Env      Env;		/* environments */
+typedef struct Binding  Binding;
 typedef struct Function Function;
-typedef struct Exp Exp;		/* expressions */
-typedef struct Value Value;
-typedef struct Thunk Thunk;
+typedef struct Exp      Exp;		/* expressions */
+typedef struct Value    Value;
+typedef struct Thunk    Thunk;
 
 
  /* object - a union of all internal types */

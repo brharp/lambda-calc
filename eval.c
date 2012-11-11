@@ -13,6 +13,8 @@
 /*	const Value *promise(const Exp *exp, Env *env);
 /*
 /*	const Value *force(const Value *val);
+/*
+/*	const Exp *expand(const Exp *exp, Env *env);
 /* DESCRIPTION
 /*	This module evaluates expressions in the lambda calculus.
 /*
@@ -27,6 +29,8 @@
 /*	thunk is replaced by the result of evaluating the saved expression in
 /*	the saved environment. The result of calling the thunk is saved, so
 /*	calling force() again will return the same value.
+/*
+/*	expand() returns a fully expanded form of an expression.
 /*--*/
 
 #include <assert.h>
@@ -53,41 +57,50 @@ const Value *promise(const Exp *exp, Env *env);
 
 const Value *eval(const Exp * exp, Env * env)
 {
-	const Value *op = 0, *lhs = 0, *rhs = 0;
+	const Value *op = 0, *lhs = 0, *rhs = 0, *val = 0;
+	static int indent = 0;
+	int i = 0;
 
 	assert(exp != 0);
 	assert(env != 0);
 
 	switch (exp->type) {
 	case T_Exp_Symbol:
-		return lookup(exp->sval, env);
+		val = lookup(exp->sval, env);
+		break;
 
 	case T_Exp_Lambda:
 		assert(exp->child[0] != 0);
 		assert(exp->child[1] != 0);
 		assert(exp->child[0]->type == T_Exp_Symbol);
-		return make_function(exp->child[0], exp->child[1], env);
+		val = make_function(exp->child[0], exp->child[1], env);
+		break;
 
 	case T_Exp_Pair:
 		op = force(eval(exp->child[0], env));
 		assert(op->type == T_Function);
-		return apply(op->data.function, promise(exp->child[1], env));
+		val = apply(op->data.function, promise(exp->child[1], env));
+		break;
 
 	case T_Exp_Quote:
-		return make_value((Object) (exp->child[0]), T_Exp);
+		val = make_value((Object) (exp->child[0]), T_Exp);
+		break;
 
 	case T_Exp_Assign:
 		assert(exp->child[0] != 0);
 		assert(exp->child[1] != 0);
 		assert(exp->child[0]->type == T_Exp_Symbol);
 		assert(exp->child[0]->sval != 0);
-		return bind(exp->child[0]->sval, eval(exp->child[1], env), env);
+		val = bind(exp->child[0]->sval, eval(exp->child[1], env), env);
+		break;
 
 	default:
-		fputws(L"error: illegal expression type", stderr);
+		fwprintf(stderr, L"%s: %d: %s: illegal expression type\n",
+			__FILE__, __LINE__, "eval");
 		exit(EXIT_FAILURE);
-		return 0;
 	}
+	
+	return val;
 }
 
 
@@ -175,6 +188,16 @@ static const Value *make_thunk(const Exp *exp, Env *env)
 	thk->env   = env;
 
 	return make_value((Object) thk, T_Thunk);
+}
+
+
+/* print_thunk - print a thunk */
+
+void print_thunk(const Thunk *thk, FILE *stream)
+{
+	fputws(L"(promise ", stream);
+	fwprintf(stream, L"<Thunk %p value=%p, exp=%p>",
+		thk, thk->value, thk->exp, thk->env);
 }
 
 

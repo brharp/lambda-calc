@@ -1,6 +1,6 @@
 
 OBJECTS = eval.o exp.o read.o print.o env.o mystdlib.o
-CFLAGS = -g
+CFLAGS = -g 
 
 a.out: $(OBJECTS)
 	$(CC) $(OBJECTS)
@@ -13,4 +13,7 @@ dist: lambda
 
 test: a.out
 	a.out < test.l
+
+tags: *.c *.h
+	ctags *.c *.h
 

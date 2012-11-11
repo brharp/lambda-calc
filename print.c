@@ -17,6 +17,7 @@
 
  /* System libraries */
 
+#include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
 
@@ -58,31 +59,24 @@ void print_value(const Value * val, FILE *stream)
 		fputws(L"#<Function ", stream);
 		if (fn->name != 0) {
 			fputws(fn->name, stream);
-			fputws(L" ", stream);
 		}
-		fputws(L"\\", stream);
-		print_exp(fn->param, stream);
-		fputwc(separator, stream);
-		print_exp(fn->body, stream);
-		/* print environment
-		fputwc(space, stream);
-		fputwc(L'{', stream);
-		print_env(fn->env, stream);
-		fputwc(L'}', stream); */
-		fputws(L">", stream);
+		fputwc(L'>', stream);
 		break;
 
 	case T_Exp:
+		fputws(L"#<Exp ", stream);
 		print_exp(val->data.exp, stream);
+		fputws(L">", stream);
 		break;
 
 	case T_Thunk:
-		print_value(force(val), stream);
+		print_thunk(val, stream);
 		break;
 
 	default:
-		fputws(L"#<?>", stream);
-		break;
+		fwprintf(stderr, L"%s: %d: %s: Unknown value type: %d\n",
+			__FILE__, __LINE__, "print_value", val->type);
+		exit(EXIT_FAILURE);
 	}
 }
 
@@ -101,6 +95,7 @@ static void print_list(const Exp *exp, FILE *stream)
 		print_exp(exp, stream);
 	}
 }
+
 
 /* print_exp - prints an expression */
 
@@ -143,6 +138,11 @@ void print_exp(const Exp *exp, FILE *stream)
 		fputwc(space, stream);
 		print_exp(exp->child[1], stream);
 		break;
+
+	default:
+		fwprintf(stderr, L"%s: %d: %s: Unknown exp type: %d\n",
+			__FILE__, __LINE__, "print_exp", exp->type);
+		exit(EXIT_FAILURE);
 	}
 }
 
@@ -159,12 +159,15 @@ static wchar_t *type_name[] = {
 
 int indent(int delta, FILE *stream)
 {
-    static int     indent = 0;
-    static wchar_t *space = L"\t\t\t\t\t\t\t\t\t\t\t\t";
-    
-    indent += delta;
-    fwprintf(stream, L"%.*ls", indent, space);
-    return indent;
+	static int indent = 0;
+	int i;
+
+	fputwc(L'\n', stream);
+	for (i = 0; i < indent; i++) {
+		fputwc(L'\t', stream);
+	}
+	indent += delta;
+	return indent;
 }
 
 void dump_exp(const Exp * exp, FILE *stream)
@@ -196,3 +199,20 @@ void dump_exp(const Exp * exp, FILE *stream)
     indent(-1, stream);
     fputws(L"}", stream);
 }
+
+
+/* pexp - print expression to stderr */
+
+void pexp(const Exp *exp) {
+	print_exp(exp, stderr);
+	fputwc(L'\n', stderr);
+}
+
+
+/* pval - print value to stderr */
+
+void pval(const Value *val) {
+	print_value(val, stderr);
+	fputwc(L'\n', stderr);
+}
+
