@@ -12,7 +12,8 @@ dist: lambda
 	tar -czf lambda-calc.tgz -C .. lambda-calc
 
 test: a.out
-	a.out < test.l
+	a.out < test.l > test.tmp 2>/dev/null
+	cmp test.out test.tmp
 
 tags: *.c *.h
 	ctags *.c *.h

@@ -47,6 +47,16 @@ true = \cons.\ante.cons
 false = \cons.\ante.ante
 if true 'yes 'no
 if false 'yes 'no
+
+;; Boolean operations
+not = \x.x false true
+and = \x.\y.x y false
+
+and true true
+and true false
+and false true
+and false false
+
 ;; Numbers.
 plus = \m.\n.\f.\x.m f (n f x)
 succ = \n.\f.\x.f (n f x)
@@ -65,17 +75,19 @@ pred = \n.\f.\x.n (\g.\h.h (g f)) (\u.x) (\u.u)
 ;; (\u.u (\u.u x) f) f)
 ;; (\u.u (f x) f)
 ;; (f (f x))
+sub = \m.\n.n pred m
 
-0 = \f.\x.x
-1 = \f.\x.f x
-2 = succ 1
-3 = succ 2
-4 = succ 3
-5 = succ 4
-6 = succ 5
-7 = succ 6
-8 = succ 7
-9 = succ 8
+0  = \f.\x.x
+1  = succ 0
+2  = succ 1
+3  = succ 2
+4  = succ 3
+5  = succ 4
+6  = succ 5
+7  = succ 6
+8  = succ 7
+9  = succ 8
+10 = succ 9
 
 2 print 'x
 
@@ -101,4 +113,27 @@ zerop = \n.n (\x.false) true
 fact = \n.if (zerop n) 1 (mult (fact (pred n)) n)
 (fact 4) print 'x
 
+digits = (cons '0 (cons '1 (cons '2 (cons '3 (cons '4 (cons '5 (cons '6 (cons '7 (cons '8 (cons '9))))))))))
+dec = \n.car (n cdr digits)
+print (dec 3)
+
+print (dec (sub 6 2))
+print (dec (sub 2 6))
+
+gt = \m.\n.if (zerop (sub m n)) false true
+gt 6 2
+gt 2 6
+gt 2 2
+
+eq = \m.\n.and (zerop (sub m n)) (zerop (sub n m))
+
+le = \m.\n.not (gt m n)
+le 6 2
+le 2 6
+le 2 2
+
+lt = \m.\n.and (le m n) (not (eq m n))
+lt 6 2
+lt 2 6
+lt 2 2
 
