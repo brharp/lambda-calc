@@ -48,7 +48,7 @@ void print_value(const Value * val, FILE *stream)
 	switch (val->type) {
 	case T_Function:
 		fn = val->data.function;
-		fputws(L"#<Function ", stream);
+		//fputws(L"#<Function ", stream);
 		if (fn->name != 0) {
 			fputws(fn->name, stream);
 		} else {
@@ -57,7 +57,7 @@ void print_value(const Value * val, FILE *stream)
 			fputwc(separator, stream);
 			print_exp(fn->body, stream);
 		}
-		fputwc(L'>', stream);
+		//fputwc(L'>', stream);
 		break;
 
 	case T_Exp:

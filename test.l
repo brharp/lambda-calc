@@ -137,3 +137,13 @@ lt 6 2
 lt 2 6
 lt 2 2
 
+div = \m.\n.if (zerop (sub m n)) (if (eq m n) 1 0) (succ (div (sub m n) n))
+print (dec (div 2 2))
+print (dec (div 3 2))
+print (dec (div 4 2))
+print (dec (div 5 2))
+print (dec (div 6 2))
+print (dec (div 7 2))
+print (dec (div 8 2))
+
+
