@@ -40,6 +40,7 @@
 #include "types.h"
 #include "read.h"
 #include "eval.h"
+#include "char.h"
 #include "env.h"
 
 
@@ -52,12 +53,24 @@ static const Value *make_function(const Exp *param, const Exp *body,
 
 const Value *promise(const Exp *exp, Env *env);
 
+const Value *print(const Function *fn, const Value *arg);
+
+
+/* the - check type */
+
+void *the(Type type, const Value *val)
+{
+	assert(val->type == type);
+	return (void *)val->data.function;
+}
+
 
 /* eval - evaluate an expression */
 
 const Value *eval(const Exp * exp, Env * env)
 {
 	const Value *op = 0, *lhs = 0, *rhs = 0, *val = 0;
+	const Function *fn;
 	static int indent = 0;
 	int i = 0;
 
@@ -77,9 +90,9 @@ const Value *eval(const Exp * exp, Env * env)
 		break;
 
 	case T_Exp_Pair:
-		op = force(eval(exp->child[0], env));
-		assert(op->type == T_Function);
-		val = apply(op->data.function, promise(exp->child[1], env));
+		op  = force(eval(exp->child[0], env));
+		fn  = (Function *) the(T_Function, op);
+		val = fn->apply(fn, promise(exp->child[1], env));
 		break;
 
 	case T_Exp_Quote:
@@ -157,9 +170,28 @@ static const Value *make_function(const Exp *param, const Exp *body,
 	fn->param = param;
 	fn->body  = body;
 	fn->env   = env;
+	fn->apply = apply;
 
 	return make_value((Object) fn, T_Function);
 }
+
+
+/* make_builtin - makes a builtin function object */
+
+static const Value *make_builtin(const wchar_t *name, Procedure proc)
+{
+	Function *fn = 0;
+
+	fn = mymalloc(sizeof(*fn));
+	fn->name    = name;
+	fn->param   = 0;
+	fn->body    = 0;
+	fn->env     = 0;
+	fn->apply   = proc;
+
+	return make_value((Object) fn, T_Function);
+}
+                                 
 
 
 /* make_value - makes a value */
@@ -201,11 +233,23 @@ void print_thunk(const Thunk *thk, FILE *stream)
 }
 
 
+/* print - print and return a value */
+
+const Value *print(const Function *fun, const Value *arg)
+{
+	print_value(force(arg), stdout);
+	fputwc(newline, stdout);
+	return arg;
+}
+
+
 /* main - program entry */
 
 int main(int argc, char *argv[])
 {
 	Env *gbl = get_global_environment();
+
+	bind(L"print", make_builtin(L"print", print), gbl);
 
 	for (;;) {
 		const Exp *exp = 0;

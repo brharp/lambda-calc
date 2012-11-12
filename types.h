@@ -24,9 +24,7 @@ enum Exp_Type {
 	T_Exp_Lambda,
 	T_Exp_Pair,
 	T_Exp_Quote,
-	T_Exp_Assign,
-	T_Exp_Print,
-	T_Exp_Read
+	T_Exp_Assign
 };
 
 
@@ -52,6 +50,10 @@ typedef struct Exp      Exp;		/* expressions */
 typedef struct Value    Value;
 typedef struct Thunk    Thunk;
 
+
+ /* Procedure - funcation call procedure */
+
+typedef const Value *(*Procedure)(const Function *, const Value *);
 
  /* object - a union of all internal types */
 
@@ -88,6 +90,7 @@ struct Function {
 	const Exp *param;
 	const Exp *body;
 	Env *env;
+	Procedure apply;
 };
 
 
@@ -98,6 +101,7 @@ struct Thunk {
 	const Exp *exp;
 	Env *env;
 };
+
 
 /* AUTHOR
 /*	Brent Harp

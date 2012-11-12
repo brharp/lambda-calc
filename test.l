@@ -7,9 +7,7 @@
 ;; functions 'car' and 'cdr' are convenience functions
 ;; that apply a cons to the appropriate selector.
 cons = \x.\y.\f.f x y
-;; cons = function (x) { return function (y) { return function (f) { return f(x,y); } } }
 getcar = \x.\y.x
-;; getcar = function (x) { return function (y) { return x; } }
 getcdr = \x.\y.y
 car = \x.x getcar
 cdr = \x.x getcdr
@@ -17,13 +15,14 @@ caar = \x.car (car x)
 cadr = \x.car (cdr x)
 cdar = \x.cdr (car x)
 cddr = \x.cdr (cdr x)
+;; The evaluator used to allow modifying values,
+;; which made the following definitions of rplaca
+;; and rplacd possible. Values are now immutable.
 ;rplaca = \x.\y.(cons y (cdr x))
 ;rplacd = \x.\y.(cons (car x) y)
 q = cons 'i 'j
 car q
 cdr q
-;rplaca q 'k
-;car q
 ;; Infinite lists. Due to the laziness of the evaluator,
 ;; infinite structures can be defined. The function 'inf'
 ;; creates an inifinite list of its argument:
@@ -43,19 +42,19 @@ inf = \x.cons x (inf x)
 ;; themselves functions: true is a function of 2 arguments
 ;; (a consequent and an antecedent) that evaluates its
 ;; consequent; false is like true but evaluates the antecedent.
-if = \predicate.\consequent.\antecedent.predicate consequent antecedent
-true = \consequent.\antecedent.consequent
-false = \consequent.\antecedent.antecedent
+if = \pred.\cons.\ante.pred cons ante
+true = \cons.\ante.cons
+false = \cons.\ante.ante
 if true 'yes 'no
 if false 'yes 'no
 ;; Numbers.
 plus = \m.\n.\f.\x.m f (n f x)
 succ = \n.\f.\x.f (n f x)
-
+mult = \m.\n.\f.m (n f)
 ;; Predecessor.
 pred = \n.\f.\x.n (\g.\h.h (g f)) (\u.x) (\u.u)
-;; How pred works.
-;; Apply "\g.\h.h (g f)" n times:
+;; How pred works. Take for example "pred 3".
+;; Apply "\g.\h.h (g f)" 3 times:
 ;; (\g.\h.h (\g.\h.h (\g.\h.h (g f)) f) f) (\u.x) (\u.u)
 ;; You will notice 3 applications of 'h' and only one of 'g'.
 ;; The 'g' is bound to (\u.x) and the 'h' is bound to (\u.u):
@@ -67,22 +66,39 @@ pred = \n.\f.\x.n (\g.\h.h (g f)) (\u.x) (\u.u)
 ;; (\u.u (f x) f)
 ;; (f (f x))
 
-one = \f.\x.f x
-two = plus one one
+0 = \f.\x.x
+1 = \f.\x.f x
+2 = succ 1
+3 = succ 2
+4 = succ 3
+5 = succ 4
+6 = succ 5
+7 = succ 6
+8 = succ 7
+9 = succ 8
+
+2 print 'x
+
 f = \y.cons 'x y
 g = f 'nil
 car g
 cdr g
-h = one f 'nil
+h = 1 f 'nil
 car h
 cdr h
-i = two f 'nil
+i = 2 f 'nil
 car i
 car (cdr i)
 cadr i
 cddr i
 
-j = pred two f 'nil
+j = pred 2 f 'nil
 car j
 cdr j
+
+zerop = \n.n (\x.false) true
+
+fact = \n.if (zerop n) 1 (mult (fact (pred n)) n)
+(fact 4) print 'x
+
 

@@ -1,5 +1,5 @@
 
-OBJECTS = eval.o exp.o read.o print.o env.o mystdlib.o
+OBJECTS = eval.o exp.o read.o print.o env.o mystdlib.o char.o
 CFLAGS = -g 
 
 a.out: $(OBJECTS)

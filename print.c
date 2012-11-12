@@ -27,18 +27,10 @@
 #include "types.h"
 #include "print.h"
 #include "eval.h"
+#include "char.h"
 #include "env.h"
 
 
- /* Constants */
-
-const wint_t lambda    = L'\\';
-const wint_t separator = L'.';
-const wint_t lparen    = L'(';
-const wint_t rparen    = L')';
-const wint_t quote     = L'\'';
-const wint_t space     = L' ';
-const wint_t assign    = L'=';
 
 
 /* print_value - prints a value */
@@ -59,14 +51,17 @@ void print_value(const Value * val, FILE *stream)
 		fputws(L"#<Function ", stream);
 		if (fn->name != 0) {
 			fputws(fn->name, stream);
+		} else {
+			fputwc(lambda, stream);
+			print_exp(fn->param, stream);
+			fputwc(separator, stream);
+			print_exp(fn->body, stream);
 		}
 		fputwc(L'>', stream);
 		break;
 
 	case T_Exp:
-		fputws(L"#<Exp ", stream);
 		print_exp(val->data.exp, stream);
-		fputws(L">", stream);
 		break;
 
 	case T_Thunk:
