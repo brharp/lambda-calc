@@ -42,7 +42,7 @@
 #include "eval.h"
 #include "char.h"
 #include "env.h"
-
+#include "print.h"
 
 /* function prototypes */
 
@@ -96,7 +96,7 @@ const Value *eval(const Exp * exp, Env * env)
 		break;
 
 	case T_Exp_Quote:
-		val = make_value((Object) (exp->child[0]), T_Exp);
+		val = make_exp_value(exp->child[0]);
 		break;
 
 	case T_Exp_Assign:
@@ -162,17 +162,20 @@ static const Value *make_function(const Exp *param, const Exp *body,
 				  Env *env)
 {
 	Function *fn = 0;
+	Object obj;
 
 	assert(param->type == T_Exp_Symbol);
 
-	fn = mymalloc(sizeof(*fn));
+	fn = (Function *)mymalloc(sizeof(*fn));
 	fn->name  = 0;
 	fn->param = param;
 	fn->body  = body;
 	fn->env   = env;
 	fn->apply = apply;
 
-	return make_value((Object) fn, T_Function);
+	obj.function = fn;
+
+	return make_value(obj, T_Function);
 }
 
 
@@ -182,14 +185,14 @@ static const Value *make_builtin(const wchar_t *name, Procedure proc)
 {
 	Function *fn = 0;
 
-	fn = mymalloc(sizeof(*fn));
+	fn = (Function *)mymalloc(sizeof(fn));
 	fn->name    = name;
 	fn->param   = 0;
 	fn->body    = 0;
 	fn->env     = 0;
 	fn->apply   = proc;
 
-	return make_value((Object) fn, T_Function);
+	return make_function_value(fn);
 }
                                  
 
@@ -200,11 +203,47 @@ const Value *make_value(Object data, Type type)
 {
 	Value *val = 0;
 
-	val = mymalloc(sizeof(*val));
+	val = (Value *)mymalloc(sizeof(*val));
 	val->type = type;
 	val->data = data;
 
 	return val;
+}
+
+
+/* make_function_value - makes a function value */
+
+const Value *make_function_value(Function *fn)
+{
+	Object obj;
+
+	obj.function = fn;
+	
+	return make_value(obj, T_Function);
+}
+
+
+/* make_exp_value - makes an expression value */
+
+const Value *make_exp_value(const Exp *exp)
+{
+	Object obj;
+
+	obj.exp = exp;
+
+	return make_value(obj, T_Exp);
+}
+
+
+/* make_thunk_value - makes a thunk value */
+
+const Value *make_thunk_value(Thunk *thk)
+{
+	Object obj;
+
+	obj.thunk = thk;
+
+	return make_value(obj, T_Thunk);
 }
 
 
@@ -214,12 +253,12 @@ static const Value *make_thunk(const Exp *exp, Env *env)
 {
 	Thunk *thk = 0;
 
-	thk = mymalloc(sizeof(*thk));
+	thk = (Thunk *)mymalloc(sizeof(*thk));
 	thk->value = 0;
 	thk->exp   = exp;
 	thk->env   = env;
 
-	return make_value((Object) thk, T_Thunk);
+	return make_thunk_value(thk);
 }
 
 
@@ -259,8 +298,10 @@ int main(int argc, char *argv[])
 		fputws(L";; ", stderr);
 		print_exp(exp, stderr);
 		fputwc(L'\n', stderr);
+		fflush(stderr);
 		print_value(force(eval(exp, gbl)), stdout);
 		fputwc(L'\n', stdout);
+		fflush(stdout);
 	}
 
 	return 0;

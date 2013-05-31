@@ -15,6 +15,7 @@
 void print_value(const Value * val, FILE *);
 void print_string(const wchar_t * str, FILE *);
 void print_exp(const Exp * exp, FILE *);
+void print_thunk(const Thunk *thk, FILE *stream);
 void pexp(const Exp * exp);
 void pval(const Value *val);
 

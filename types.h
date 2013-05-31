@@ -1,5 +1,4 @@
 #include <wchar.h>
-#include <stdbool.h>
 #ifndef _TYPES_H_INCLUDED_
 #define _TYPES_H_INCLUDED_
 /*++
@@ -15,6 +14,17 @@
  /* constants */
 
 #define UNBOUND (0)
+
+
+ /* booleans */
+
+#if !defined(WIN32)
+#include <stdbool.h>
+#elif !defined(__BOOL_DEFINED)
+typedef int bool;
+#define false 0
+#define true !false
+#endif
 
 
  /* enumeration of expression types */
@@ -62,6 +72,7 @@ union Object {
 	Function  *function;
 	Thunk     *thunk;
 	Env       *env;
+	void      *und;
 };
 
 

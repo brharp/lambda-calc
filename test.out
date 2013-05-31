@@ -1,68 +1,132 @@
+;; cons = \x.\y.\f.(f x y)
 cons
+;; getcar = \x.\y.x
 getcar
+;; getcdr = \x.\y.y
 getcdr
+;; car = \x.(x getcar)
 car
+;; cdr = \x.(x getcdr)
 cdr
+;; caar = \x.(car (car x))
 caar
+;; cadr = \x.(car (cdr x))
 cadr
+;; cdar = \x.(cdr (car x))
 cdar
+;; cddr = \x.(cdr (cdr x))
 cddr
+;; q = (cons 'i 'j)
 q
+;; (car q)
 i
+;; (cdr q)
 j
+;; inf = \x.(cons x (inf x))
 inf
+;; (inf 'x)
 \f.(f x y)
+;; (car (inf 'x))
 x
+;; (cdr (inf 'x))
 \f.(f x y)
+;; (car (cdr (inf 'x)))
 x
+;; (car (cdr (cdr (inf 'x))))
 x
+;; if = \pred.\cons.\ante.(pred cons ante)
 if
+;; true = \cons.\ante.cons
 true
+;; false = \cons.\ante.ante
 false
+;; (if true 'yes 'no)
 yes
+;; (if false 'yes 'no)
 no
+;; not = \x.(x false true)
 not
+;; and = \x.\y.(x y false)
 and
+;; (and true true)
 true
+;; (and true false)
 false
+;; (and false true)
 false
+;; (and false false)
 false
+;; plus = \m.\n.\f.\x.(m f (n f x))
 plus
+;; succ = \n.\f.\x.(f (n f x))
 succ
+;; mult = \m.\n.\f.(m (n f))
 mult
+;; pred = \n.\f.\x.(n \g.\h.(h (g f)) \u.x \u.u)
 pred
+;; sub = \m.\n.(n pred m)
 sub
+;; 0 = \f.\x.x
 0
+;; 1 = (succ 0)
 1
+;; 2 = (succ 1)
 2
+;; 3 = (succ 2)
 3
+;; 4 = (succ 3)
 4
+;; 5 = (succ 4)
 5
+;; 6 = (succ 5)
 6
+;; 7 = (succ 6)
 7
+;; 8 = (succ 7)
 8
+;; 9 = (succ 8)
 9
+;; 10 = (succ 9)
 10
+;; (2 print 'x)
 x
 x
 x
+;; f = \y.(cons 'x y)
 f
+;; g = (f 'nil)
 g
+;; (car g)
 x
+;; (cdr g)
 nil
+;; h = (1 f 'nil)
 h
+;; (car h)
 x
+;; (cdr h)
 nil
+;; i = (2 f 'nil)
 i
+;; (car i)
 x
+;; (car (cdr i))
 x
+;; (cadr i)
 x
+;; (cddr i)
 nil
+;; j = (pred 2 f 'nil)
 \f.(f x y)
+;; (car j)
 x
+;; (cdr j)
 nil
+;; zerop = \n.(n \x.false true)
 zerop
+;; fact = \n.(if (zerop n) 1 (mult (fact (pred n)) n))
 fact
+;; (fact 4 print 'x)
 x
 x
 x
@@ -88,39 +152,65 @@ x
 x
 x
 x
+;; digits = (cons '0 (cons '1 (cons '2 (cons '3 (cons '4 (cons '5 (cons '6 (cons '7 (cons '8 (cons '9))))))))))
 digits
+;; dec = \n.(car (n cdr digits))
 dec
+;; (print (dec 3))
 3
 3
+;; (print (dec (sub 6 2)))
 4
 4
+;; (print (dec (sub 2 6)))
 0
 0
+;; gt = \m.\n.(if (zerop (sub m n)) false true)
 gt
+;; (gt 6 2)
 true
+;; (gt 2 6)
 false
+;; (gt 2 2)
 false
+;; eq = \m.\n.(and (zerop (sub m n)) (zerop (sub n m)))
 eq
+;; le = \m.\n.(not (gt m n))
 le
+;; (le 6 2)
 false
+;; (le 2 6)
 true
+;; (le 2 2)
 true
+;; lt = \m.\n.(and (le m n) (not (eq m n)))
 lt
+;; (lt 6 2)
 false
+;; (lt 2 6)
 true
+;; (lt 2 2)
 false
+;; div = \m.\n.(if (zerop (sub m n)) (if (eq m n) 1 0) (succ (div (sub m n) n)))
 div
+;; (print (dec (div 2 2)))
 1
 1
+;; (print (dec (div 3 2)))
 1
 1
+;; (print (dec (div 4 2)))
 2
 2
+;; (print (dec (div 5 2)))
 2
 2
+;; (print (dec (div 6 2)))
 3
 3
+;; (print (dec (div 7 2)))
 3
 3
+;; (print (dec (div 8 2)))
 4
 4

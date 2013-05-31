@@ -65,7 +65,7 @@ void print_value(const Value * val, FILE *stream)
 		break;
 
 	case T_Thunk:
-		print_thunk(val, stream);
+		print_thunk(val->data.thunk, stream);
 		break;
 
 	default:
@@ -96,8 +96,6 @@ static void print_list(const Exp *exp, FILE *stream)
 
 void print_exp(const Exp *exp, FILE *stream)
 {
-	const Exp *nxt;
-
 	if (exp == 0) {
 		fputws(L"<null>", stream);
 		return;

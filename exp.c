@@ -35,11 +35,10 @@
 const Exp *make_symbol_exp(const wchar_t *name)
 {
 	Exp *exp = 0;
-	wchar_t *scopy;
 
-	exp = mymalloc(sizeof(*exp));
+	exp = (Exp *)mymalloc(sizeof(*exp));
 	exp->type = T_Exp_Symbol;
-	exp->sval = wcsdup(name);
+	exp->sval = _wcsdup(name);
 
 	return exp;
 }

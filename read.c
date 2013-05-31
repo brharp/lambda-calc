@@ -136,8 +136,9 @@ static void read_dot(FILE * stream)
 
 static const Exp *read_symbol_exp(FILE *stream)
 {
+	#define MAX_SYMBOL_LENGTH (64)
 	const size_t max_symbol_length = 64;
-	wchar_t sb[max_symbol_length + 1], *sp = 0;
+	wchar_t sb[MAX_SYMBOL_LENGTH + 1], *sp = 0;
 	wint_t ch = 0;
 
 	/* initialize */
