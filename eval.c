@@ -186,7 +186,7 @@ static const Value *make_builtin(const wchar_t *name, Procedure proc)
 	Function *fn = 0;
 
 	fn = (Function *)mymalloc(sizeof(fn));
-	fn->name    = name;
+	fn->name    = _wcsdup(name);
 	fn->param   = 0;
 	fn->body    = 0;
 	fn->env     = 0;
@@ -287,9 +287,9 @@ const Value *print(const Function *fun, const Value *arg)
 int main(int argc, char *argv[])
 {
 	Env *gbl = get_global_environment();
-
+	
 	bind(L"print", make_builtin(L"print", print), gbl);
-
+	
 	for (;;) {
 		const Exp *exp = 0;
 		while (exp == 0) {
@@ -303,6 +303,6 @@ int main(int argc, char *argv[])
 		fputwc(L'\n', stdout);
 		fflush(stdout);
 	}
-
+	
 	return 0;
 }

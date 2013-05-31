@@ -45,7 +45,7 @@ static Binding *make_binding(const wchar_t * name,
 	assert(name != 0);
 	assert(val  != 0);
 
-	bnd = mymalloc(sizeof(*bnd));
+	bnd = (Binding *)mymalloc(sizeof(*bnd));
 	bnd->name  = name;
 	bnd->value = val;
 	bnd->link  = lnk;

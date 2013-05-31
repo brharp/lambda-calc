@@ -18,7 +18,7 @@
 
  /* booleans */
 
-#if !defined(WIN32)
+#if !defined(_WIN32)
 #include <stdbool.h>
 #elif !defined(__BOOL_DEFINED)
 typedef int bool;

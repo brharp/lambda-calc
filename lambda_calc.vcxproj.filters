@@ -15,41 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="stdafx.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="char.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="env.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="eval.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="exp.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="mystdlib.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="print.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="read.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="types.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="char.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -71,5 +36,31 @@
     <ClCompile Include="read.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="char.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="env.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="eval.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="exp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mystdlib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="print.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="read.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
