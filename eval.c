@@ -107,6 +107,10 @@ const Value *eval(const Exp * exp, Env * env)
 		val = bind(exp->child[0]->sval, eval(exp->child[1], env), env);
 		break;
 
+	case T_Exp_Number:
+		val = church(exp->nval);
+		break;
+
 	default:
 		fwprintf(stderr, L"%s: %d: %s: illegal expression type\n",
 			__FILE__, __LINE__, "eval");
