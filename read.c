@@ -87,11 +87,11 @@ const Exp *read_exp(FILE * stream)
 	} else if (c == L'(') {
 		return read_sub_exp(stream);
 	} else if (L'a' <= c && c <= L'z'
-		|| L'A' <= c && c <= L'Z') {
+		    || L'A' <= c && c <= L'Z'
+			|| L'0' <= c && c <= L'9') {
 		unread_char(c, stream);
 		return read_symbol_exp(stream);
-	} else if (L'0' <= c && c <= L'9') {
-		unread_char(c, stream);
+	} else if (c == L'#') {
 		return read_num_exp(stream);
 	} else {
 		/* invalid expression */
