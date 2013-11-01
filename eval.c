@@ -282,6 +282,44 @@ const Value *print(const Function *fun, const Value *arg)
 }
 
 
+/* load - load a source file */
+
+const Value *load(const Function *fun, const Value *arg)
+{
+	const wchar_t *basename;
+	wchar_t filename[FILENAME_MAX + 1];
+	FILE *in;
+	const Exp *exp;
+	Env *gbl;
+	unsigned int nlines = 0;
+
+	arg = force(arg);
+	assert(arg->type == T_Exp);
+	basename = arg->data.exp->sval;
+	swprintf(filename, FILENAME_MAX, L"%s.l", basename);
+	in = _wfopen(filename, L"r");
+	gbl = get_global_environment();
+
+	fwprintf(stderr, L";; reading %s...\n", filename);
+
+	while (!feof(in)) {
+		if ((exp = read_exp_list_delim(L'\n', in)) != 0) {
+			++nlines;
+			fputws(L";; ", stderr);
+			print_exp(exp, stderr);
+			fputwc(L'\n', stderr);
+			eval(exp, gbl);
+		}
+	}
+
+	fclose(in);
+
+	fwprintf(stderr, L";; %d lines read\n", nlines);
+
+	return arg;
+}
+
+
 /* main - program entry */
 
 int main(int argc, char *argv[])
@@ -289,6 +327,7 @@ int main(int argc, char *argv[])
 	Env *gbl = get_global_environment();
 	
 	bind(L"print", make_builtin(L"print", print), gbl);
+	bind(L"load",  make_builtin(L"load",  load),  gbl);
 
 	for (;;) {
 		const Exp *exp = 0;
