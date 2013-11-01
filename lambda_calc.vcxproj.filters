@@ -69,4 +69,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="test.l">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>
