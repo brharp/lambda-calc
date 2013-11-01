@@ -21,6 +21,7 @@
 #include "read.h"
 #include "exp.h"
 #include "char.h"
+#include "num.h"
 
  /* key words */
 
@@ -33,6 +34,7 @@ static const Exp *read_sub_exp(FILE *);
 static const Exp *read_quote_exp(FILE *);
 static const Exp *read_lambda_exp(FILE *);
 static const Exp *read_symbol_exp(FILE *);
+static const Exp *read_num_exp(FILE *);
 static void read_dot(FILE *);
 static wint_t read_char(FILE *, bool);
 static void unread_char(wint_t, FILE *);
@@ -85,16 +87,19 @@ const Exp *read_exp(FILE * stream)
 	} else if (c == L'(') {
 		return read_sub_exp(stream);
 	} else if (L'a' <= c && c <= L'z'
-			|| L'A' <= c && c <= L'Z'
-			|| L'0' <= c && c <= L'9') {
+		|| L'A' <= c && c <= L'Z') {
 		unread_char(c, stream);
 		return read_symbol_exp(stream);
+	} else if (L'0' <= c && c <= L'9') {
+		unread_char(c, stream);
+		return read_num_exp(stream);
 	} else {
 		/* invalid expression */
 		unread_char(c, stream);
 		return 0;
 	}
 }
+
 
 static const Exp *read_sub_exp(FILE *stream)
 {
@@ -166,6 +171,31 @@ static const Exp *read_symbol_exp(FILE *stream)
 
 	/* make and return symbol expression */
 	return make_symbol_exp(sb);
+}
+
+
+  /* read_num - read a number from a stream */
+
+static const Exp *read_num_exp(FILE *stream)
+{
+	wint_t       ch   = 0;
+	unsigned int nval = 0;
+
+	/* initialize */
+	ch = read_char(stream, true);	/* skip whitespace */
+
+	/* loop while char is numeric */
+	while (L'0' <= ch && ch <= L'9') {
+		nval *= 10;
+		nval += (ch - L'0');
+		ch = read_char(stream, false);
+	}
+
+	/* put back non-alpha-numeric char */
+	unread_char(ch, stream);
+
+	/* church encode integer */
+	return church_encode(nval);
 }
 
 

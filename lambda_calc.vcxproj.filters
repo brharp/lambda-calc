@@ -36,6 +36,9 @@
     <ClCompile Include="read.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="num.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="char.h">
@@ -60,6 +63,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="num.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
