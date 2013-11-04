@@ -42,6 +42,7 @@
 #include "eval.h"
 #include "char.h"
 #include "env.h"
+#include "exp.h"
 #include "print.h"
 
 /* function prototypes */
@@ -297,17 +298,12 @@ const Value *load(const Function *fun, const Value *arg)
 	assert(arg->type == T_Exp);
 	basename = arg->data.exp->sval;
 	swprintf(filename, FILENAME_MAX, L"%s.l", basename);
-	in = _wfopen(filename, L"r");
+	_wfopen_s(&in, filename, L"r");
 	gbl = get_global_environment();
-
-	fwprintf(stderr, L";; reading %s...\n", filename);
-
+	
 	while (!feof(in)) {
-		if ((exp = read_exp_list_delim(L'\n', in)) != 0) {
+		if ((exp = read_statement(in)) != 0) {
 			++nlines;
-			fputws(L";; ", stderr);
-			print_exp(exp, stderr);
-			fputwc(L'\n', stderr);
 			eval(exp, gbl);
 		}
 	}
@@ -316,7 +312,7 @@ const Value *load(const Function *fun, const Value *arg)
 
 	fwprintf(stderr, L";; %d lines read\n", nlines);
 
-	return arg;
+	return make_exp_value(make_symbol_exp(L"ok"));
 }
 
 
@@ -332,7 +328,7 @@ int main(int argc, char *argv[])
 	for (;;) {
 		const Exp *exp = 0;
 		while (exp == 0) {
-			exp = read_exp_list_delim(L'\n', stdin);
+			exp = read_statement(stdin);
 		}
 		fputws(L";; ", stderr);
 		print_exp(exp, stderr);

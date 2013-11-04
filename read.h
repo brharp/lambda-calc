@@ -12,7 +12,7 @@
  /* Function prototypes. */
 
 const Exp *read_exp(FILE *);
-const Exp *read_exp_list_delim(wint_t, FILE *);
+const Exp *read_statement(FILE *);
 
 /* AUTHOR
 /*	Brent Harp

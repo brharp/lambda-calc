@@ -30,6 +30,7 @@ static const wchar_t *print = L"print";
  /* function prototypes */
 
 static const Exp *read_exp_list(FILE *);
+static const Exp *read_exp_list_delim(wint_t, FILE *);
 static const Exp *read_sub_exp(FILE *);
 static const Exp *read_quote_exp(FILE *);
 static const Exp *read_lambda_exp(FILE *);
@@ -41,17 +42,31 @@ static void unread_char(wint_t, FILE *);
 static const Exp *parse_error(const wchar_t *, ...);
 static wint_t get_char(FILE *);
 
-const Exp *read_exp_list_delim(wint_t c, FILE * stream)
+
+const Exp *read_statement(FILE * stream)
+{
+	const Exp *stmt;
+
+	if (stmt = read_exp_list(stream)) {
+		read_dot(stream);
+	}
+
+	return stmt;
+}
+
+
+static const Exp *read_exp_list_delim(wint_t c, FILE * stream)
 {
     const Exp *e = 0;
 
     e = read_exp_list(stream);
-    if (read_char(stream, false) != c) {
-	parse_error(L"expected '%c'", c);
+    if (e != 0 && read_char(stream, false) != c) {
+		parse_error(L"expected '%c'", c);
     }
 
     return e;
 }
+
 
 static const Exp *read_exp_list(FILE * stream)
 {
@@ -73,6 +88,7 @@ static const Exp *read_exp_list(FILE * stream)
 
 	return exp;
 }
+
 
 const Exp *read_exp(FILE * stream)
 {
@@ -129,10 +145,10 @@ static void read_dot(FILE * stream)
 {
 	wint_t ch = 0;
 
-	ch = read_char(stream, false);
+	ch = read_char(stream, true);
 
 	if (ch != L'.') {
-		parse_error(L"expected '.', found '%lc'", ch);
+		parse_error(L"expected '.', found '%lc'\n", ch);
 	}
 }
 
@@ -209,7 +225,7 @@ static wint_t read_char(FILE *stream, bool skip_space)
 	ch = get_char(stream);
 
 	if (skip_space) {
-		while (ch == space || ch == tab) {
+		while (ch == space || ch == tab || ch == newline || ch == creturn) {
 			ch = get_char(stream);
 		}
 	}
@@ -222,14 +238,13 @@ static wint_t get_char(FILE *stream)
 {
 	wint_t c;
     
+	/* comments*/
 	if ((c = fgetwc(stream)) == comment) {
 		while (c != newline) {
 			c = fgetwc(stream);
 		}
 	}
-	if (c == WEOF) {
-		exit(EXIT_SUCCESS);
-	}
+
 	return c;
 }
 
