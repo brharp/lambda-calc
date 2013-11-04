@@ -32,6 +32,7 @@ inf = \x.cons x (inf x).
 (cdr (inf 'x)).
 (car (cdr (inf 'x))).
 (car (cdr (cdr (inf 'x)))).
+
 ;; Conditionals. Conditional statements can be defined in
 ;; lambda calculus with no special support from the 
 ;; evaluator. The conditional statement 'if' is a function
@@ -47,6 +48,8 @@ true = \cons.\ante.cons.
 false = \cons.\ante.ante.
 if true 'yes 'no.
 if false 'yes 'no.
+
+nil = false.
 
 ;; Boolean operations
 not = \x.x false true.
@@ -113,7 +116,7 @@ zerop = \n.n (\x.false) true.
 fact = \n.if (zerop n) 1 (mult (fact (pred n)) n).
 (fact 4) print 'x.
 
-digits = (cons '0 (cons '1 (cons '2 (cons '3 (cons '4 (cons '5 (cons '6 (cons '7 (cons '8 (cons '9)))))))))).
+digits = (cons '0 (cons '1 (cons '2 (cons '3 (cons '4 (cons '5 (cons '6 (cons '7 (cons '8 (cons '9 digits)))))))))).
 dec = \n.car (n cdr digits).
 print (dec 3).
 
@@ -138,8 +141,8 @@ lt 2 6.
 lt 2 2.
 
 div = \m.\n.
-    if (zerop (sub m n))
-	    (if (eq m n) 1 0)
+	if (zerop (sub m n))
+		(if (eq m n) 1 0)
 		(succ (div (sub m n) n))
 	.
 
@@ -150,3 +153,21 @@ print (dec (div 5 2)).
 print (dec (div 6 2)).
 print (dec (div 7 2)).
 print (dec (div 8 2)).
+print (dec (div 8 4)).
+
+rem = \m.\n.
+	if (eq m n)
+		0
+		(if (gt m n)
+			(rem (sub m n) n)
+			m)
+	.
+
+dec (rem 7 3).
+dec (rem 8 3).
+dec (rem 8 4).
+dec (rem 8 5).
+
+map = \f.\h.\t.
+visit = \h.\t.((\d.(h visit)) (print h)).
+digits visit false.
