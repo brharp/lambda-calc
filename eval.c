@@ -325,18 +325,17 @@ int main(int argc, char *argv[])
 	bind(L"print", make_builtin(L"print", print), gbl);
 	bind(L"load",  make_builtin(L"load",  load),  gbl);
 
-	for (;;) {
+	while (!feof(stdin)) {
 		const Exp *exp = 0;
-		while (exp == 0) {
-			exp = read_statement(stdin);
+		if ((exp = read_statement(stdin)) != 0) {
+			fputws(L";; ", stderr);
+			print_exp(exp, stderr);
+			fputwc(L'\n', stderr);
+			fflush(stderr);
+			print_value(force(eval(exp, gbl)), stdout);
+			fputwc(L'\n', stdout);
+			fflush(stdout);
 		}
-		fputws(L";; ", stderr);
-		print_exp(exp, stderr);
-		fputwc(L'\n', stderr);
-		fflush(stderr);
-		print_value(force(eval(exp, gbl)), stdout);
-		fputwc(L'\n', stdout);
-		fflush(stdout);
 	}
 	
 	return 0;
