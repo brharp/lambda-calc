@@ -168,6 +168,8 @@ dec (rem 8 3).
 dec (rem 8 4).
 dec (rem 8 5).
 
-map = \f.\h.\t.
-visit = \h.\t.((\d.(h visit)) (print h)).
-digits visit false.
+;; An alternate representation of lists as a right fold.
+cons = \h.\t.\c.\n.c h (t c n).
+nil  = \c.\n.n.
+digits = (cons '0 (cons '1 (cons '2 (cons '3 (cons '4 (cons '5 (cons '6 (cons '7 (cons '8 (cons '9 nil)))))))))).
+digits (\h.\t.(\d.print h) t) nil.
