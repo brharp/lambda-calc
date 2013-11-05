@@ -267,9 +267,9 @@ static const Value *make_thunk(const Exp *exp, Env *env)
 
 void print_thunk(const Thunk *thk, FILE *stream)
 {
-	fputws(L"(promise ", stream);
-	fwprintf(stream, L"<Thunk %p value=%p, exp=%p>",
-		thk, thk->value, thk->exp, thk->env);
+	fwprintf(stream, L"#<Thunk@%p value=%p, exp=", thk, thk->value);
+	print_exp(thk->exp, stream);
+	fwprintf(stream, L">\n");
 }
 
 
