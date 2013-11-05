@@ -22,6 +22,7 @@ extern const wint_t tab;
 extern const wint_t newline;
 extern const wint_t comment;
 extern const wint_t creturn;
+extern const wint_t comma;
 
 /* AUTHOR
 /*	Brent Harp

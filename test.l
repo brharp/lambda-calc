@@ -172,4 +172,4 @@ dec (rem 8 5).
 cons = \h.\t.\c.\n.c h (t c n).
 nil  = \c.\n.n.
 digits = (cons '0 (cons '1 (cons '2 (cons '3 (cons '4 (cons '5 (cons '6 (cons '7 (cons '8 (cons '9 nil)))))))))).
-digits (\h.\t.(\d.print h) t) nil.
+digits (\h.\t.(print h), t) nil.

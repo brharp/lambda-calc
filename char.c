@@ -14,3 +14,4 @@ const wint_t tab       = L'\t';
 const wint_t newline   = L'\n';
 const wint_t comment   = L';';
 const wint_t creturn   = L'\r';
+const wint_t comma     = L',';

@@ -102,3 +102,17 @@ const Exp *make_assign_exp(const Exp *key, const Exp *value)
 	return exp;
 }
 
+
+/* make_seq - makes a sequencing expression */
+
+const Exp *make_seq_exp(const Exp *head, const Exp *tail)
+{
+	Exp *exp = 0;
+
+	exp = mymalloc(sizeof(*exp));
+	exp->type = T_Exp_Seq;
+	exp->child[0] = head;
+	exp->child[1] = tail;
+
+	return exp;
+}

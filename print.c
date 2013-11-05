@@ -132,6 +132,13 @@ void print_exp(const Exp *exp, FILE *stream)
 		print_exp(exp->child[1], stream);
 		break;
 
+	case T_Exp_Seq:
+		print_exp(exp->child[0], stream);
+		fputwc(comma, stream);
+		fputwc(space, stream);
+		print_exp(exp->child[1], stream);
+		break;
+
 	default:
 		fwprintf(stderr, L"%s: %d: %s: Unknown exp type: %d\n",
 			__FILE__, __LINE__, "print_exp", exp->type);

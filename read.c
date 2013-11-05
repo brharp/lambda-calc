@@ -79,6 +79,8 @@ static const Exp *read_exp_list(FILE * stream)
 
 	if ((c = read_char(stream, true)) == L'=') {
 		return make_assign_exp(exp, read_exp_list(stream));
+	} else if (c == L',') {
+		return make_seq_exp(exp, read_exp_list(stream));
 	}
 
 	unread_char(c, stream);
