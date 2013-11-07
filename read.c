@@ -7,7 +7,12 @@
 /*	#include <read.h>
 /*	
 /*	Exp	*read(void);
-/*	
+/* DESCRIPTION
+/*  Reads sentences in the following grammar:
+/*  statement : ( assignment | expression-sequence ) "."
+/*  assignment : symbol "=" expression-sequence
+/*  expression-sequence : expression-list "," expression-sequence | expression-list
+/*  expression-list : ( expression expression-list ) | expression
 /*--*/
 
 
@@ -36,6 +41,7 @@ static const Exp *read_quote_exp(FILE *);
 static const Exp *read_lambda_exp(FILE *);
 static const Exp *read_symbol_exp(FILE *);
 static const Exp *read_num_exp(FILE *);
+static const Exp *read_exp_sequence(FILE *);
 static void read_dot(FILE *);
 static wint_t read_char(FILE *, bool);
 static void unread_char(wint_t, FILE *);
@@ -45,13 +51,49 @@ static wint_t get_char(FILE *);
 
 const Exp *read_statement(FILE * stream)
 {
-	const Exp *stmt;
+	const Exp *stmt = 0, *lhs, *rhs;
+	wchar_t    ch;
 
-	if (stmt = read_exp_list(stream)) {
+	if ((lhs = read_exp_list(stream)) != 0) {
+
+		/* Peek at next char. */
+		ch = read_char(stream, true);
+
+		if (ch == L'=') { /* Assignment. */
+			rhs  = read_exp_sequence(stream);
+			stmt = make_assign_exp(lhs, rhs);
+		} else if (ch == L',') { /* Sequence. */
+			rhs  = read_exp_sequence(stream);
+			stmt = make_seq_exp(lhs, rhs);
+		} else if (ch != WEOF) { /* Simple list. */
+			unread_char(ch, stream);
+			stmt = lhs;
+		}
+
 		read_dot(stream);
 	}
-
+	
 	return stmt;
+}
+
+
+static const Exp *read_exp_sequence(FILE * stream)
+{
+	const Exp *lst = 0, *seq = 0;
+	wint_t c = 0;
+
+	if ((seq = read_exp_list(stream)) == 0) {
+		return 0;
+	}
+
+	while ((c = read_char(stream, true)) == L',') {
+		lst = read_exp_list(stream);
+		seq = make_seq_exp(seq, lst);
+	}
+
+	unread_char(c, stream);
+
+	return seq;
 }
 
 
@@ -77,13 +119,6 @@ static const Exp *read_exp_list(FILE * stream)
 		return 0;
 	}
 
-	if ((c = read_char(stream, true)) == L'=') {
-		return make_assign_exp(exp, read_exp_list(stream));
-	} else if (c == L',') {
-		return make_seq_exp(exp, read_exp_list(stream));
-	}
-
-	unread_char(c, stream);
 	for (lst = read_exp(stream); lst != 0; lst = read_exp(stream)) {
 		exp = make_pair_exp(exp, lst);
 	}
@@ -137,7 +172,7 @@ static const Exp *read_lambda_exp(FILE *stream)
 
 	param = read_symbol_exp(stream);
 	read_dot(stream);
-	body = read_exp_list(stream);
+	body = read_exp_sequence(stream);
 	exp = make_lambda_exp(param, body);
 
 	return exp;
@@ -267,6 +302,8 @@ static const Exp *parse_error(const wchar_t *fmt, ...)
 	va_start(ap, fmt);
 	vfwprintf(stderr, fmt, ap);
 	va_end(ap);
+
+	exit(1);
 
 	return 0;
 }
