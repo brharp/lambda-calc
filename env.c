@@ -2,8 +2,11 @@
 /* NAME
 /*	env 3
 /* SUMMARY
-/*	Environments.
-/* 
+/*	Environments bind names to values.
+/* SYNOPSIS
+/*  #include <env.h>
+/*  
+/*  
 /*--*/
 
 #include <assert.h>
@@ -17,8 +20,7 @@
 
  /* function prototypes */
 
-static Binding *make_binding(const wchar_t * name, const Value * value,
-                             Binding * lnk);
+static const Binding *make_binding(const wchar_t *, const Value *, const Binding *);
 
 static Env *make_env(Env * link);
 
@@ -28,17 +30,20 @@ static Env *make_env(Env * link);
 struct Binding {
 	const wchar_t *name;
 	const Value *value;
-	Binding *link;
+	const Binding *link;
 };
 
 struct Env {
-	Binding *bindings;
+	const Binding *bindings;
 	Env *link;
 };
 
 
-static Binding *make_binding(const wchar_t * name,
-                             const Value * val, Binding * lnk)
+/* make_binding - makes a new binding */
+
+static const Binding *make_binding(const wchar_t *name,
+                             const Value   *val,
+							 const Binding *lnk)
 {
 	Binding *bnd = 0;
 
@@ -71,9 +76,9 @@ static Env *make_env(Env *link)
 /* get_binding - returns the binding of name in env. If name is not
    bound, inserts name into environment as an unbound symbol. */
 
-Binding *get_binding(Env *env, const wchar_t *name)
+static const Binding *get_binding(Env *env, const wchar_t *name)
 {
-	Binding *bnd = UNBOUND;
+	const Binding *bnd = UNBOUND;
 
 	assert(env  != 0);
 	assert(name != 0);
@@ -92,7 +97,7 @@ found:
 
 /* put_binding - inserts a new binding into an environment */
 
-Binding *put_binding(Env *env, const wchar_t *name, const Value *val)
+static const Binding *put_binding(Env *env, const wchar_t *name, const Value *val)
 {
 	assert(env  != 0);
 	assert(name != 0);
@@ -106,7 +111,7 @@ Binding *put_binding(Env *env, const wchar_t *name, const Value *val)
 
 void print_locals(Env *env, FILE *stream)
 {
-	Binding *bnd = 0;
+	const Binding *bnd = 0;
 	static bool rec = false;
 
 	assert(env != 0);
@@ -136,7 +141,7 @@ void print_locals(Env *env, FILE *stream)
 
 void print_env(Env *env, FILE *stream)
 {
-	Binding *bnd = 0;
+	const Binding *bnd = 0;
 	static bool rec = 0;
 
 	if (rec == 1) {
@@ -179,13 +184,8 @@ const Value *bind(const wchar_t *name, const Value *value, Env *env)
 		value->data.function->name = name;
 	}
 
-	if ((bnd = get_binding(env, name)) == UNBOUND) {
-		/* create new binding */
-		put_binding(env, name, value);
-	} else {
-		/* change existing binding */
-		bnd->value = value;
-	}
+	/* create new binding */
+	put_binding(env, name, value);
 
 	return value;
 }
@@ -212,8 +212,8 @@ Env *link(const wchar_t *name, const Value *value, Env *env)
 
 const Value *lookup(const wchar_t * name, Env * env)
 {
-	Binding     *bnd = UNBOUND;
-	const Value *val = 0;
+	const Binding *bnd = UNBOUND;
+	const Value   *val = 0;
 
 	if ((bnd = get_binding(env, name)) != UNBOUND) {
 		val = bnd->value;
