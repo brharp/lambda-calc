@@ -50,7 +50,7 @@ const Exp *make_lambda_exp(const Exp *param, const Exp *body)
 {
 	Exp *exp = 0;
 
-	exp = mymalloc(sizeof(*exp));
+	exp = (Exp *)mymalloc(sizeof(*exp));
 	exp->type = T_Exp_Lambda;
 	exp->child[0] = param;
 	exp->child[1] = body;
@@ -61,13 +61,13 @@ const Exp *make_lambda_exp(const Exp *param, const Exp *body)
 
 /* make_pair - makes a pair expression */
 
-const Exp *make_pair_exp(const Exp *operator, const Exp *operand)
+const Exp *make_pair_exp(const Exp *op, const Exp *operand)
 {
 	Exp *exp = 0;
 
-	exp = mymalloc(sizeof(*exp));
+	exp = (Exp *)mymalloc(sizeof(*exp));
 	exp->type = T_Exp_Pair;
-	exp->child[0] = operator;
+	exp->child[0] = op;
 	exp->child[1] = operand;
 
 	return exp;
@@ -80,7 +80,7 @@ const Exp *make_quote_exp(const Exp *body)
 {
 	Exp *exp = 0;
 
-	exp = mymalloc(sizeof *exp);
+	exp = (Exp *) mymalloc(sizeof *exp);
 	exp->type = T_Exp_Quote;
 	exp->child[0] = body;
 
@@ -94,7 +94,7 @@ const Exp *make_assign_exp(const Exp *key, const Exp *value)
 {
 	Exp *exp = 0;
 
-	exp = mymalloc(sizeof(*exp));
+	exp = (Exp *) mymalloc(sizeof(*exp));
 	exp->type = T_Exp_Assign;
 	exp->child[0] = key;
 	exp->child[1] = value;
@@ -109,10 +109,24 @@ const Exp *make_seq_exp(const Exp *head, const Exp *tail)
 {
 	Exp *exp = 0;
 
-	exp = mymalloc(sizeof(*exp));
+	exp = (Exp *) mymalloc(sizeof(*exp));
 	exp->type = T_Exp_Seq;
 	exp->child[0] = head;
 	exp->child[1] = tail;
+
+	return exp;
+}
+
+
+/* make_num_exp - makes a numeric expression */
+
+const Exp *make_num_exp(unsigned int nval)
+{
+	Exp *exp = 0;
+
+	exp = (Exp *) mymalloc(sizeof(*exp));
+	exp->type = T_Exp_Num;
+	exp->nval = nval;
 
 	return exp;
 }

@@ -247,8 +247,8 @@ static const Exp *read_num_exp(FILE *stream)
 	/* put back non-alpha-numeric char */
 	unread_char(ch, stream);
 
-	/* church encode integer */
-	return church_encode(nval);
+	/* make and return number expression */
+	return make_num_exp(nval);
 }
 
 

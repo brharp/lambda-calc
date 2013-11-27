@@ -44,6 +44,8 @@
 #include "env.h"
 #include "exp.h"
 #include "print.h"
+#include "num.h"
+
 
 /* function prototypes */
 
@@ -113,6 +115,10 @@ const Value *eval(const Exp * exp, Env * env)
 		assert(exp->child[1] != 0);
 		force(eval(exp->child[0], env));
 		val = force(eval(exp->child[1], env));
+		break;
+
+	case T_Exp_Num:
+		val = eval(church_encode(exp->nval), env);
 		break;
 
 	default:

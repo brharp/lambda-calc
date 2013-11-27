@@ -35,7 +35,8 @@ enum Exp_Type {
 	T_Exp_Pair,
 	T_Exp_Quote,
 	T_Exp_Assign,
-	T_Exp_Seq
+	T_Exp_Seq,
+	T_Exp_Num
 };
 
 

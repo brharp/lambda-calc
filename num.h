@@ -14,7 +14,7 @@
 
  /* function prototypes */
 
-const Exp *church_encode(const int n);
+const Exp *church_encode(const unsigned int n);
 
 /* AUTHOR
 /*	Brent Harp

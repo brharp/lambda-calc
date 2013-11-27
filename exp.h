@@ -7,5 +7,6 @@ const Exp *make_quote_exp(const Exp *);
 const Exp *make_assign_exp(const Exp *, const Exp *);
 const Exp *make_symbol_exp(const wchar_t *);
 const Exp *make_seq_exp(const Exp *, const Exp *);
+const Exp *make_num_exp(unsigned int);
 
 #endif
