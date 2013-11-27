@@ -19,12 +19,14 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -66,6 +68,7 @@
     <ClCompile Include="eval.c" />
     <ClCompile Include="exp.c" />
     <ClCompile Include="mystdlib.c" />
+    <ClCompile Include="num.c" />
     <ClCompile Include="print.c" />
     <ClCompile Include="read.c" />
   </ItemGroup>
@@ -75,6 +78,7 @@
     <ClInclude Include="eval.h" />
     <ClInclude Include="exp.h" />
     <ClInclude Include="mystdlib.h" />
+    <ClInclude Include="num.h" />
     <ClInclude Include="print.h" />
     <ClInclude Include="read.h" />
     <ClInclude Include="types.h" />
