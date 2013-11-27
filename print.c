@@ -139,6 +139,10 @@ void print_exp(const Exp *exp, FILE *stream)
 		print_exp(exp->child[1], stream);
 		break;
 
+	case T_Exp_Num:
+		fwprintf(stream, L"%d", exp->nval);
+		break;
+
 	default:
 		fwprintf(stderr, L"%s: %d: %s: Unknown exp type: %d\n",
 			__FILE__, __LINE__, "print_exp", exp->type);
