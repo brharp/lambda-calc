@@ -6,7 +6,32 @@
 /* SYNOPSIS
 /*  #include <env.h>
 /*  
-/*  
+/*  const Value *lookup(const wchar_t * name, Env * env)
+/*  Env *link(const wchar_t *name, const Value *value, Env *env)
+/*  const Value *bind(const wchar_t *name, const Value *value, Env *env)
+/* DESCRIPTION
+/*  lookup() searches an environment for a named value. Names are
+/*  compared by wcscmp(). If a match is found (wcscmp returns 0) then
+/*  the value is returned. Otherwise, lookup() searches the next
+/*  environment by following the environment's link pointer.
+/*
+/*  link() binds name to value in a new environment. If name is already
+/*  bound in env, the new binding shadows the old binding, but does
+/*  not replace it. That is, calling lookup() on the original environment
+/*  returns the old value.
+/*
+/*  bind() binds name to value in the environment env. Any previous binding
+/*  of name in the environment is destroyed.
+/* RETURN VALUE
+/*  lookup() returns a constant value if name is bound in the 
+/*  environment, otherwise it returns 0;
+/*
+/*  link() returns a new environment, with name bound to value. The new
+/*  environment inherits and shadows any bindings from env.
+/*
+/*  bind() returns the bound value.
+/*
+/*  get_global_environment() returns a reference to the global environment.
 /*--*/
 
 #include <assert.h>
@@ -20,9 +45,10 @@
 
  /* function prototypes */
 
+static const Binding *get_binding(Env *, const wchar_t *);
 static const Binding *make_binding(const wchar_t *, const Value *, const Binding *);
-
-static Env *make_env(Env * link);
+static const Binding *put_binding(Env *, const wchar_t *, const Value *);
+static       Env     *make_env(Env *);
 
 
  /* structure definitions */

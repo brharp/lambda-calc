@@ -16,7 +16,6 @@
 
  /* Function prototypes */
 
-const Binding *get_binding(Env *env, const wchar_t *name);
 const Value *lookup(const wchar_t *name, Env * env);
 Env *link(const wchar_t *name, const Value *value, Env *env);
 const Value *bind(const wchar_t *name, const Value *value, Env *env);
