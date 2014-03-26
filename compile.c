@@ -95,42 +95,50 @@ const Value *compile(const Exp * exp, Env * env)
 }
 
 
+static Value **sp;
+
+
 const Value *pop()
 {
-
+	return *sp--;
 }
+
+
+void push(const Value *val)
+{
+	*++sp = val;
+}
+
 
 static Value *code;
 static Env *env;
 static int pc;
 
-const Value *execute(const Function *fun, const Env *env)
+
+const Value *execute(const Function *fun)
 {
 	int ip;	/* instruction pointer */
+	const Function *inst;	/* next instruction */
 
 	for (ip = 0; ip < codelen; ip++) {
-		fun->code[ip](&fun->code[ip]);
+		inst = fun->code[ip];
+		push(inst->apply(inst, pop()));
 	}
 }
 
 
-const Value *call()
+const Value *call(const Function *fun, const Value *arg)
 {
-	const Value *fun;
-
-	fun = pop();
 	assert(fun != 0);
-	assert(fun->type == T_Function);
-	code = fun->data.function->code;
-	assert(code != 0);
-	env = fun->data.env;
-	pc = 0;
+	env = link(fun->param->sval, arg, fun->env);
+	execute(fun);
+	env = unlink(env);
 }
 
 
 /* push variable onto stack */
 
-void variable()
+const Value *variable(const Function *fun, const Value *arg)
 {
 	int i, j;
 

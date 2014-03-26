@@ -61,8 +61,10 @@ and false true.
 and false false.
 
 ;; Numbers.
-plus = \m.\n.\f.\x.m f (n f x).
+zero = \f.\x.x.
 succ = \n.\f.\x.f (n f x).
+
+plus = \m.\n.\f.\x.m f (n f x).
 mult = \m.\n.\f.m (n f).
 ;; Predecessor.
 pred = \n.\f.\x.n (\g.\h.h (g f)) (\u.x) (\u.u).
@@ -80,17 +82,17 @@ pred = \n.\f.\x.n (\g.\h.h (g f)) (\u.x) (\u.u).
 ;; (f (f x))
 sub = \m.\n.n pred m.
 
-0  = \f.\x.x.
-1  = succ 0.
-2  = succ 1.
-3  = succ 2.
-4  = succ 3.
-5  = succ 4.
-6  = succ 5.
-7  = succ 6.
-8  = succ 7.
-9  = succ 8.
-10 = succ 9.
+;0  = \f.\x.x.
+;1  = succ 0.
+;2  = succ 1.
+;3  = succ 2.
+;4  = succ 3.
+;5  = succ 4.
+;6  = succ 5.
+;7  = succ 6.
+;8  = succ 7.
+;9  = succ 8.
+;10 = succ 9.
 
 2 print 'x.
 
@@ -173,5 +175,14 @@ cons = \h.\t.\c.\n.c h (t c n).
 nil  = \c.\n.n.
 digits = (cons '0 (cons '1 (cons '2 (cons '3 (cons '4 (cons '5 (cons '6 (cons '7 (cons '8 (cons '9 nil)))))))))).
 digits (\h.\t.print h, t) nil.
+
+;; Printing digits with map
+map = \f.\s.s (\h.\t.f h, t) s.
+map print digits.
+
+;; mapcar is lazy, so nothing will be printed here
+;; unless we force evaluation of the list.
+mapcar = \f.\s.s (\h.\t.cons (f h) t) nil.
+map (\x.x) (mapcar print digits).
 
 print 'a, print 'b, print 'c.

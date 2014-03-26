@@ -18,6 +18,7 @@
 
 const Value *lookup(const wchar_t *name, Env * env);
 Env *link(const wchar_t *name, const Value *value, Env *env);
+Env *unlink(Env *env);
 const Value *bind(const wchar_t *name, const Value *value, Env *env);
 Env *get_global_environment();
 void print_env(Env * env, FILE *stream);

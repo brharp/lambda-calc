@@ -234,6 +234,14 @@ Env *link(const wchar_t *name, const Value *value, Env *env)
 }
 
 
+/* unlink - Removes one environment frame. */
+
+Env *unlink(Env *env)
+{
+	return env->link;
+}
+
+
 /* lookup - Looks up a value by name in an environment.  */
 
 const Value *lookup(const wchar_t * name, Env * env)
