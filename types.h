@@ -104,6 +104,7 @@ struct Function {
 	const Exp *body;
 	Env *env;
 	Procedure apply;
+	const Value *code;
 };
 
 

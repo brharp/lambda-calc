@@ -39,6 +39,9 @@
     <ClCompile Include="num.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="compile.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="char.h">
