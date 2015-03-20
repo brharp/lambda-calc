@@ -56,11 +56,16 @@ void call(void)
 	const Function *fun;
 	const Value *arg, *val;
 
+	/* 
+	 * pop function and argument 
+	 */
 	fun = *sp++;
 	arg = *sp++;
 
+	/* apply function */
 	val = fun->apply(fun, arg);
 
+	/* push result */
 	*--sp = val;
 }
 
