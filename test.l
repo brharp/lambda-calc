@@ -43,17 +43,17 @@ inf = \x.cons x (inf x).
 ;; themselves functions: true is a function of 2 arguments
 ;; (a consequent and an antecedent) that evaluates its
 ;; consequent; false is like true but evaluates the antecedent.
-if = \pred.\cons.\ante.pred cons ante .
-true = \cons.\ante.cons.
-false = \cons.\ante.ante.
+if = \pred.\cons.\ante.pred cons ante .  ;; type Bool: T|F, type Pred: (Bool -> (a -> (b -> a|b)))
+true = \cons.\ante.cons.   ;; type T: (a -> (b -> a))
+false = \cons.\ante.ante.  ;; type F: (a -> (b -> b))
 if true 'yes 'no.
 if false 'yes 'no.
 
 nil = false.
 
 ;; Boolean operations
-not = \x.x false true.
-and = \x.\y.x y false.
+not = \x.x false true.        ;; type: (Bool -> Bool)
+and = \x.\y.x y false.        ;; type: (Bool -> (Bool -> Bool))
 
 and true true.
 and true false.
