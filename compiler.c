@@ -75,8 +75,9 @@ void call(void)
 void variable(void)
 {
 	assert(sp > cp);
+#define PUSH(x) (*--sp = (x))
 
-	*--sp = *ip++;
+	PUSH(*ip++);
 }
 
 
